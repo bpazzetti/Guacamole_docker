@@ -1,0 +1,45 @@
+services:
+  # guacd
+  guacd:
+    container_name: guacamole_backend
+    image: guacamole/guacd:latest
+    restart: unless-stopped
+    volumes:
+    - ./drive:/drive:rw
+    - ./record:/var/lib/guacamole/recordings:rw
+
+  mariadb:
+    container_name: guacamole_database
+    image: mariadb:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: '${MARIADB_PASSWORD}'
+      MYSQL_DATABASE: 'guacamole_db'
+      MYSQL_USER: '${MARIADB_USER}'
+      MYSQL_PASSWORD: '${MARIADB_PASSWORD}'
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d:ro
+      - './data:/var/lib/mysql'
+
+# guacamole
+  guacamole:
+    container_name: guacamole_frontend
+    image: guacamole/guacamole:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    environment:
+      GUACD_HOSTNAME: "guacd"
+      MYSQL_HOSTNAME: "mariadb"
+      MYSQL_DATABASE: "guacamole_db"
+      MYSQL_USER: '${MARIADB_USER}'
+      MYSQL_PASSWORD: '${MARIADB_PASSWORD}'
+      #TOTP_ENABLED: "true"    
+    depends_on:
+    - guacd
+    - mariadb
+    links:
+    - guacd
+    volumes:
+    - ./drive:/drive:rw
+    - ./record:/var/lib/guacamole/recordings

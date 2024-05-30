@@ -1,0 +1,20 @@
+```
+# Ignore data, records, and drive folders
+
+# Data
+guacamole_mariadb/data/
+guacamole_postgres/data/
+
+# Records
+guacamole_mariadb/record/
+guacamole_postgres/record/
+
+# Drive
+guacamole_mariadb/drive/
+guacamole_postgres/drive/
+
+# Init
+guacamole_mariadb/init/
+guacamole_postgres/init/
+
+```
